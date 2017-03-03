@@ -9,15 +9,42 @@
 import UIKit
 import MBProgressHUD
 
-// Main ViewController
-class RepoResultsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+protocol SettingsPresentingViewControllerDelegate: class {
+    func didSaveSettings(settings: GithubRepoSearchSettings)
+    func didCancelSettings()
+}
+// Main ViewController
+class RepoResultsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SettingsPresentingViewControllerDelegate {
+    internal func didCancelSettings() {
+        
+    }
+
+    internal func didSaveSettings(settings: GithubRepoSearchSettings) {
+        searchSettings.minStars = settings.minStars
+        doSearch()
+        if searchSettings.minStars != 0 {
+            searchSettings.minStars += 1
+        }
+    }
+
+
+    
     @IBOutlet weak var tableView: UITableView!
     var searchBar: UISearchBar!
     var searchSettings = GithubRepoSearchSettings()
 
     var repos: [GithubRepo]!
     
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let navControl = segue.destination as? UINavigationController
+        let vc = navControl?.topViewController as! SearchSettingsViewController
+        vc.settings = self.searchSettings
+        vc.numStars = Float(self.searchSettings.minStars)
+        vc.delegate = self
+
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RepoCell", for: indexPath) as! RepoCell
