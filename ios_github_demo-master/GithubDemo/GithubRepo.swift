@@ -53,22 +53,26 @@ class GithubRepo: CustomStringConvertible {
     // Actually fetch the list of repositories from the GitHub API.
     // Calls successCallback(...) if the request is successful
     class func fetchRepos(_ settings: GithubRepoSearchSettings, successCallback: @escaping ([GithubRepo]) -> (), error: ((Error?) -> ())?) {
-        let manager = AFHTTPRequestOperationManager()
         let params = queryParamsWithSettings(settings)
+        var components = URLComponents(string: reposUrl)!
+        components.queryItems = params.map { URLQueryItem(name: $0.key, value: $0.value) }
+        guard let url = components.url else { return }
 
-        manager.get(reposUrl, parameters: params, success: { (operation: AFHTTPRequestOperation, responseObject: Any) in
-            if let response = responseObject as? NSDictionary, let results = response["items"] as? NSArray {
-                var repos: [GithubRepo] = []
-                for result in results as! [NSDictionary] {
-                    repos.append(GithubRepo(jsonResult: result))
-                }
-                successCallback(repos)
+        let task = URLSession.shared.dataTask(with: url) { data, response, requestError in
+            if let requestError = requestError {
+                DispatchQueue.main.async { error?(requestError) }
+                return
             }
-        }) { (operation: AFHTTPRequestOperation, requestError: Error) in
-            if let errorCallback = error {
-                errorCallback(requestError)
+            guard let data = data,
+                  let response = try? JSONSerialization.jsonObject(with: data) as? NSDictionary,
+                  let results = response["items"] as? [NSDictionary] else {
+                DispatchQueue.main.async { error?(nil) }
+                return
             }
+            let repos = results.map { GithubRepo(jsonResult: $0) }
+            DispatchQueue.main.async { successCallback(repos) }
         }
+        task.resume()
     }
 
     // Helper method that constructs a dictionary of the query parameters used in the request to the
@@ -98,11 +102,11 @@ class GithubRepo: CustomStringConvertible {
 
     // Creates a text representation of a GitHub repo
     var description: String {
-        return "[Name: \(self.name!)]" +
-            "\n\t[Stars: \(self.stars!)]" +
-            "\n\t[Forks: \(self.forks!)]" +
-            "\n\t[Owner: \(self.ownerHandle!)]" +
-            "\n\t[Avatar: \(self.ownerAvatarURL!)]" +
-            "\n\t[Description: \(self.repoDescription)"
+        return "[Name: \(name ?? "")]" +
+            "\n\t[Stars: \(stars ?? 0)]" +
+            "\n\t[Forks: \(forks ?? 0)]" +
+            "\n\t[Owner: \(ownerHandle ?? "")]" +
+            "\n\t[Avatar: \(ownerAvatarURL ?? "")]" +
+            "\n\t[Description: \(repoDescription ?? "")]"
     }
 }
