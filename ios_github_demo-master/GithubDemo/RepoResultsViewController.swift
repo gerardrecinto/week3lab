@@ -49,14 +49,14 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         let cell = tableView.dequeueReusableCell(withIdentifier: "RepoCell", for: indexPath) as! RepoCell
         let repo = repos[indexPath.row]
 
-
-        let repoURL = URL(string: repo.ownerAvatarURL!)
-        cell.avatarImage.loadImage(from: repoURL!)
+        if let urlString = repo.ownerAvatarURL, let repoURL = URL(string: urlString) {
+            cell.avatarImage.loadImage(from: repoURL)
+        }
         cell.descriptionLabel.text = repo.repoDescription
         cell.name.text = repo.name
         cell.owner.text = repo.ownerHandle
-        cell.star.text = "\(repo.stars)"
-        cell.fork.text = "\(repo.forks)"
+        cell.star.text = "\(repo.stars ?? 0)"
+        cell.fork.text = "\(repo.forks ?? 0)"
         cell.forkImage.image = #imageLiteral(resourceName: "fork")
         cell.starImage.image = #imageLiteral(resourceName: "star")
         return cell
@@ -103,8 +103,8 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
     fileprivate func doSearch() {
 
         // Perform request to GitHub API to get the list of repositories
-        GithubRepo.fetchRepos(searchSettings, successCallback: { (newRepos) -> Void in
-
+        GithubRepo.fetchRepos(searchSettings, successCallback: { [weak self] (newRepos) -> Void in
+            guard let self = self else { return }
             // Print the returned repositories to the output window
             for repo in newRepos {
                 //self.repos.append(repo)
@@ -113,7 +113,7 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
             self.repos = newRepos
             self.tableView.reloadData()
             }, error: { (error) -> Void in
-                print(error)
+                print(error as Any)
         })
     }
 }
