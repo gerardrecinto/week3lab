@@ -3,7 +3,7 @@
 iOS GitHub repository search app built with Objective-C. Queries the GitHub Search API and displays results in a `UITableView` with dynamic-height cells via Auto Layout.
 
 ![Objective-C](https://img.shields.io/badge/Objective--C-iOS-000000?logo=apple&logoColor=white)
-![iOS 9+](https://img.shields.io/badge/iOS-9%2B-000000?logo=apple&logoColor=white)
+![iOS 16+](https://img.shields.io/badge/iOS-16%2B-000000?logo=apple&logoColor=white)
 ![Xcode](https://img.shields.io/badge/Xcode-8%2B-1575F9?logo=xcode&logoColor=white)
 
 ---
@@ -27,10 +27,12 @@ iOS GitHub repository search app built with Objective-C. Queries the GitHub Sear
 
 ---
 
+> **Modernized:** Migrated to Swift 6 strict concurrency — `@MainActor` isolation, async/await networking, native URLSession image caching (replaces AFNetworking/AlamofireImage).
+
 ## Setup
 
 ```bash
 open week3lab.xcodeproj
 ```
 
-Build and run on the iOS Simulator (Xcode 8+). No dependencies or API keys required.
+Build and run on the iOS Simulator (Xcode 16+). No dependencies or API keys required.

@@ -21,22 +21,18 @@ class SearchSettingsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
+
 
     @IBAction func saveButtonTapped(_ sender: Any) {
         self.delegate?.didSaveSettings(settings: settings)
 
     }
-    
+
     @IBAction func cancelButtonTapped(_ sender: Any) {
         self.delegate?.didCancelSettings()
 
     }
-    
+
     /*
     // MARK: - Navigation
 

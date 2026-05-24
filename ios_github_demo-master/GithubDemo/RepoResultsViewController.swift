@@ -7,17 +7,16 @@
 //
 
 import UIKit
-import MBProgressHUD
 
 
-protocol SettingsPresentingViewControllerDelegate: class {
+protocol SettingsPresentingViewControllerDelegate: AnyObject {
     func didSaveSettings(settings: GithubRepoSearchSettings)
     func didCancelSettings()
 }
 // Main ViewController
 class RepoResultsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SettingsPresentingViewControllerDelegate {
     internal func didCancelSettings() {
-        
+
     }
 
     internal func didSaveSettings(settings: GithubRepoSearchSettings) {
@@ -29,14 +28,14 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
 
-    
+
     @IBOutlet weak var tableView: UITableView!
     var searchBar: UISearchBar!
     var searchSettings = GithubRepoSearchSettings()
 
     var repos: [GithubRepo]!
-    
-    
+
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navControl = segue.destination as? UINavigationController
         let vc = navControl?.topViewController as! SearchSettingsViewController
@@ -45,14 +44,14 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         vc.delegate = self
 
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RepoCell", for: indexPath) as! RepoCell
         let repo = repos[indexPath.row]
-        
-        
+
+
         let repoURL = URL(string: repo.ownerAvatarURL!)
-        cell.avatarImage.setImageWith(repoURL!)
+        cell.avatarImage.loadImage(from: repoURL!)
         cell.descriptionLabel.text = repo.repoDescription
         cell.name.text = repo.name
         cell.owner.text = repo.ownerHandle
@@ -62,18 +61,18 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         cell.starImage.image = #imageLiteral(resourceName: "star")
         return cell
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+
         //data source
         tableView.dataSource = self
         tableView.delegate = self
         tableView.estimatedRowHeight = 100
-        tableView.rowHeight = UITableViewAutomaticDimension
-    
-        
-        
+        tableView.rowHeight = UITableView.automaticDimension
+
+
+
         // Initialize the UISearchBar
         searchBar = UISearchBar()
         searchBar.delegate = self
@@ -97,14 +96,11 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         }
         //return repos!.count
     }
-    
-    
-    
+
+
+
     // Perform the search.
     fileprivate func doSearch() {
-
-        
-        MBProgressHUD.showAdded(to: self.view, animated: true)
 
         // Perform request to GitHub API to get the list of repositories
         GithubRepo.fetchRepos(searchSettings, successCallback: { (newRepos) -> Void in
@@ -116,7 +112,6 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
             }
             self.repos = newRepos
             self.tableView.reloadData()
-            MBProgressHUD.hide(for: self.view, animated: true)
             }, error: { (error) -> Void in
                 print(error)
         })
