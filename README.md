@@ -1,49 +1,36 @@
-b 3 - *Name of App Here*
+# GitHub Repo Search — Objective-C
 
-**Name of your app** is a GitHub Repo search app using the [GitHub API](https://developer.github.com/v3/search/#search-repositories).
+iOS GitHub repository search app built with Objective-C. Queries the GitHub Search API and displays results in a `UITableView` with dynamic-height cells via Auto Layout.
 
-Time spent: **X** hours spent in total
+![Objective-C](https://img.shields.io/badge/Objective--C-iOS-000000?logo=apple&logoColor=white)
+![iOS 9+](https://img.shields.io/badge/iOS-9%2B-000000?logo=apple&logoColor=white)
+![Xcode](https://img.shields.io/badge/Xcode-8%2B-1575F9?logo=xcode&logoColor=white)
 
-## User Stories
+---
 
-The following **required** functionality is completed:
+## Features
 
-- [ ] Table rows for search results should be dynamic height according to the content height.
-- [ ] Custom cells should have the proper Auto Layout constraints.
+- Search GitHub repositories by keyword using the GitHub v3 Search API
+- Dynamic-height `UITableViewCell` via `UITableViewAutomaticDimension` and programmatic Auto Layout constraints
+- Displays repository name, description, and star count per result
 
-The following **additional** features are implemented:
+---
 
-- [ ] List anything else that you can get done to improve the app functionality!
+## Tech Stack
 
-Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
+| Layer | Technology |
+|---|---|
+| Language | Objective-C |
+| UI | UIKit, UITableView, UITableViewAutomaticDimension, Auto Layout |
+| Networking | NSURLSession / NSURLSessionDataTask |
+| API | GitHub Search API v3 (`/search/repositories`) |
 
-1.
-2.
+---
 
-## Video Walkthrough
+## Setup
 
-Here's a walkthrough of implemented user stories:
+```bash
+open week3lab.xcodeproj
+```
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
-
-## Notes
-
-Describe any challenges encountered while building the app.
-
-## License
-
-    Copyright [yyyy] [name of copyright owner]
-
-        Licensed under the Apache License, Version 2.0 (the "License");
-            you may not use this file except in compliance with the License.
-                You may obtain a copy of the License at
-
-                        http://www.apache.org/licenses/LICENSE-2.0
-
-                            Unless required by applicable law or agreed to in writing, software
-                                distributed under the License is distributed on an "AS IS" BASIS,
-                                    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                        See the License for the specific language governing permissions and
-                                            limitations under the License.
+Build and run on the iOS Simulator (Xcode 8+). No dependencies or API keys required.
